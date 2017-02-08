@@ -4,6 +4,7 @@
 #ifndef UNTITLED3_DBNG_HPP
 #define UNTITLED3_DBNG_HPP
 #include <vector>
+#include <algorithm>
 #include <array>
 #include "sqlite3.h"
 #include "reflection.hpp"

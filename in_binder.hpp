@@ -4,7 +4,7 @@
 
 #ifndef UNTITLED3_IN_BINDER_HPP
 #define UNTITLED3_IN_BINDER_HPP
-
+#include<string.h>
 #include "sqlite3.h"
 
 namespace sqlite
