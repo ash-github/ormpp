@@ -16,13 +16,40 @@ class dbng
 public:
     ~dbng()
     {
- //       int result = sqlite3_finalize(stmt_);
         int result = sqlite3_close(handle_);
         std::cout<<result<<std::endl;
     }
 
-    template<typename T>
-    std::vector<T> query(const char* sql)
+	template<typename T>
+    std::enable_if_t <!is_reflection<T>::value> for_each_impl(T& t, size_t I)
+	{
+		if (SQLITE_NULL == sqlite3_column_type(stmt_, I))
+		{
+			std::cout << "null" << std::endl;
+			//you can give a invalid value here
+			return;
+		}			
+
+		sqlite::assign(stmt_, t, I);
+	}
+
+	template<typename T>
+    std::enable_if_t <is_reflection<T>::value> for_each_impl(T& t, size_t i)
+	{
+		for_each(t, [this, i](auto& item, size_t I, bool is_last)
+		{
+            this->for_each_impl(item, I+i);
+		});
+	}
+
+	template<typename... Args>
+	std::enable_if_t<(sizeof...(Args)>1), std::vector<std::tuple<Args...>>> query(const char* sql)
+	{
+		return query<std::tuple<Args...>>(sql);
+	}
+
+    template<typename T, typename... Args>
+	std::enable_if_t<(sizeof...(Args)==0), std::vector<T>> query(const char* sql)
     {
         int result = sqlite3_prepare_v2(handle_, sql, strlen(sql), &stmt_, nullptr);
         if(result!=SQLITE_OK)
@@ -39,10 +66,13 @@ public:
                 break;
 
             T t;
-            for_each(t, [this](auto& item, size_t I, bool is_last)
+			size_t pre_val = 0;
+            for_each(t, [this, &pre_val](auto& item, size_t I, bool is_last)
             {
-                sqlite::assign(stmt_, item, I);
+				this->for_each_impl(item, pre_val);
+				pre_val += get_value<decltype(item)>();
             });
+			
             v.push_back(std::move(t));
         }
 
@@ -121,7 +151,6 @@ public:
 		if (count != sizeof...(Args))
 			return false;
 
-		//where.insert(where.find_first_of('?'), );
 		std::string s = "";
 		std::initializer_list<int>{(
 			s = to_str(std::forward<Args>(args)),
@@ -164,8 +193,6 @@ public:
 			}
 		}
 		str_atr += where;
-
-//		auto sql = make_sql(std::forward<T>(t), "replace", v);
 		
 		return excecute(str_atr.c_str(), t, v);
 	}
@@ -194,7 +221,7 @@ public:
         return exceute("BEGIN");
     }
 
-    int ROLLBACK()
+    int rollback()
     {
         int result = sqlite3_finalize(stmt_);
         return exceute("ROLLBACK");
