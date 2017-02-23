@@ -247,7 +247,7 @@ public:
         return result;
     }
 
-    template<typename T, typename=std::enable_if_t<std::is_class<T>::value>>
+    template<typename T, typename=std::enable_if_t<is_reflection<T>::value>>
 	int excecute(const char* sql, T& t, const std::vector<int>& v)
     {
         int result = sqlite3_prepare_v2(handle_, sql, strlen(sql), &stmt_, nullptr);
