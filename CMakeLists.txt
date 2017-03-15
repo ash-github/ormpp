@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(ormpp)
 
-set(CMAKE_CXX_STANDARD 14 -pthread)
+set(CMAKE_CXX_STANDARD 14)
 set(SOURCE_FILES
         main.cpp
         sqlite3.c

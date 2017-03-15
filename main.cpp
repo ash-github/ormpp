@@ -50,11 +50,11 @@ void test_sqlite()
 	dbng db;
 	int result = db.create_database("test.db");
 
-	result = db.exceute(create_article);
-	result = db.exceute(create_user);
-	result = db.exceute(create_article_type);
-	result = db.exceute(create_article_contact);
-	result = db.exceute(create_article_comment);
+	result = db.excecute(create_article);
+	result = db.excecute(create_user);
+	result = db.excecute(create_article_type);
+	result = db.excecute(create_article_contact);
+	result = db.excecute(create_article_comment);
 
 	const char* get_all = "select * from user";
 	auto parts = db.query<user>(get_all);

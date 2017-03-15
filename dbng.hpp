@@ -197,7 +197,7 @@ public:
 		return excecute(str_atr.c_str(), t, v);
 	}
 
-    int exceute(const char* sql)
+    int excecute(const char* sql)
     {
         return sqlite3_exec(handle_, sql, nullptr, nullptr, nullptr);
     }
@@ -218,19 +218,19 @@ public:
 
     int begin()
     {
-        return exceute("BEGIN");
+        return excecute("BEGIN");
     }
 
     int rollback()
     {
         int result = sqlite3_finalize(stmt_);
-        return exceute("ROLLBACK");
+        return excecute("ROLLBACK");
     }
 
     int commit()
     {
         int result = sqlite3_finalize(stmt_);
-        return exceute("COMMIT");
+        return excecute("COMMIT");
     }
 
     template<typename... Args>
