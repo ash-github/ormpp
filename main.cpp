@@ -56,6 +56,13 @@ void test_sqlite()
 	result = db.excecute(create_article_contact);
 	result = db.excecute(create_article_comment);
 
+	const char* insert_user = "insert into user(id, name,pwd,qq,sex,role) values(?,?,?,?,?,?);";
+	const char* insert_article = "insert into article(type,title,content,desc,category,author_id,pv) values(?,?,?,?,?,?,?);";
+	const char* insert_contact = "insert into contact(title,content,tm,author_id) values(?,?,?,?);";
+	result = db.excecute(insert_contact, "admin", "admin", 5, 6);
+	result = db.excecute(insert_article, 1, "test", "content", "desc", 3, 4, 2);
+	result = db.excecute(insert_user, 1, "admin", "admin", "12345", 1, 1);
+
 	const char* get_all = "select * from user";
 	auto parts = db.query<user>(get_all);
 
@@ -67,13 +74,6 @@ void test_sqlite()
 
 	const char* left_join = "select article.*,user.id  from article left join user on user.id=article.id";
 	auto parts3 = db.query<article_t, int>(left_join);
-
-	const char* insert_user = "insert into user(id, name,pwd,qq,sex,role) values(?,?,?,?,?,?);";
-	const char* insert_article = "insert into article(type,title,content,desc,category,author_id,pv) values(?,?,?,?,?,?,?);";
-	const char* insert_contact = "insert into contact(title,content,tm,author_id) values(?,?,?,?);";
-	result = db.excecute(insert_contact, "admin", "admin", 5, 6);
-	result = db.excecute(insert_article, 1, "test", "content", "desc", 3, 4, 2);
-	result = db.excecute(insert_user, "admin", "admin", "12345", 1, 1);	
 
 	const char* del_users = "delete from user";
 	result = db.excecute(del_users);

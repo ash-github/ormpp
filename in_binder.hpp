@@ -9,12 +9,16 @@
 
 namespace sqlite
 {
-    int bind(sqlite3_stmt* stmt, int item, size_t I)
+	template<typename T>
+    std::enable_if_t<std::is_integral<T>::value&&!std::is_same<T, int64_t>::value&&!std::is_same<T, uint64_t>::value, int>
+		bind(sqlite3_stmt* stmt, T item, size_t I)
     {
         return sqlite3_bind_int(stmt, I, item);
     }
 
-	int bind(sqlite3_stmt* stmt, size_t item, size_t I)
+	template<typename T>
+	std::enable_if_t<std::is_same<T, int64_t>::value||std::is_same<T, uint64_t>::value, int>
+		bind(sqlite3_stmt* stmt, T item, size_t I)
 	{
 		return sqlite3_bind_int64(stmt, I, item);
 	}
