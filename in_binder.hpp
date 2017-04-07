@@ -41,7 +41,7 @@ namespace sqlite
 
     int bind(sqlite3_stmt* stmt, const std::string& item, size_t I)
     {
-        return sqlite3_bind_blob(stmt, I, item.data(), item.size(), nullptr);
+        return sqlite3_bind_text(stmt, I, item.data(), item.size(), nullptr);
     }
 
     int bind(sqlite3_stmt* stmt, const std::vector<char>& item, size_t I)
