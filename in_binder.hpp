@@ -28,12 +28,12 @@ namespace sqlite
         return sqlite3_bind_double(stmt, I, item);
     }
 
-    int bind(sqlite3_stmt* stmt, const char*& item, size_t I)
+    int bind(sqlite3_stmt* stmt, const char* item, size_t I)
     {
         return sqlite3_bind_text(stmt, I, item, strlen(item), nullptr);
     }
 
-    int bind(sqlite3_stmt* stmt, const std::nullptr_t & item, size_t I)
+    int bind(sqlite3_stmt* stmt, const std::nullptr_t  item, size_t I)
     {
         return  0;
         //return sqlite3_bind_blob(stmt, I, item.data(), item.size(), nullptr);
@@ -41,7 +41,7 @@ namespace sqlite
 
     int bind(sqlite3_stmt* stmt, const std::string& item, size_t I)
     {
-        return sqlite3_bind_text(stmt, I, item.data(), item.size(), nullptr);
+        return sqlite3_bind_text(stmt, I, item.data(), item.length(), nullptr);
     }
 
     int bind(sqlite3_stmt* stmt, const std::vector<char>& item, size_t I)
@@ -61,16 +61,10 @@ namespace sqlite
         return sqlite3_bind_text(stmt, I, item, strlen(item), nullptr);
     }
 
-    template<size_t I, typename T>
-    int bind(sqlite3_stmt* stmt, T&& t)
-    {
-        return  bind(stmt, std::forward<T>(t), I);
-    }
-
     template<size_t I, typename Arg, typename... Args>
     int bind(sqlite3_stmt* stmt, Arg&& arg, Args&&... args)
     {
-        auto r = bind<I>(stmt, std::forward<Arg>(arg));
+        auto r = bind(stmt, std::forward<Arg>(arg), I);
         if(r!=SQLITE_OK)
             return r;
 
